@@ -1,0 +1,5 @@
+.env
+__pycache__/
+*.pyc
+quota_usage.json
+scheduled_run.log
