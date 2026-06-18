@@ -28,6 +28,22 @@ function Write-Status {
     }
 }
 
+function Invoke-Logged {
+    # Run a scriptblock, routing all output to the log (clean UTF-8) or console.
+    param([scriptblock]$Action)
+    if ($LogPath) {
+        & $Action 2>&1 |
+            ForEach-Object {
+                if ($_ -is [System.Management.Automation.ErrorRecord]) { $_.Exception.Message }
+                else { "$_" }
+            } |
+            Out-File -FilePath $LogPath -Encoding utf8 -Append
+    }
+    else {
+        & $Action
+    }
+}
+
 # Start each scheduled run with a fresh log (latest run only).
 if ($LogPath) {
     ("[{0}] Report run started" -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss")) |
@@ -65,21 +81,8 @@ else {
     Write-Status "Generating the YouTube viral radar report..." "Cyan"
     Push-Location $projectDir
     try {
-        if ($LogPath) {
-            # 2>&1 folds stderr into the pipeline; unwrap error records to plain
-            # text so the log is clean (no NativeCommandError decoration).
-            & $python.File @($python.Prefix) $scriptPath 2>&1 |
-                ForEach-Object {
-                    if ($_ -is [System.Management.Automation.ErrorRecord]) { $_.Exception.Message }
-                    else { "$_" }
-                } |
-                Out-File -FilePath $LogPath -Encoding utf8 -Append
-            $exitCode = $LASTEXITCODE
-        }
-        else {
-            & $python.File @($python.Prefix) $scriptPath
-            $exitCode = $LASTEXITCODE
-        }
+        Invoke-Logged { & $python.File @($python.Prefix) $scriptPath }
+        $exitCode = $LASTEXITCODE
     }
     finally {
         Pop-Location
@@ -87,6 +90,23 @@ else {
 
     if ($exitCode -eq 0) {
         Write-Status "Report generated successfully." "Green"
+        Write-Status "Building mobile site (build_site.py)..." "Cyan"
+        Invoke-Logged { & $python.File @($python.Prefix) (Join-Path $projectDir "build_site.py") }
+
+        if (Test-Path (Join-Path $projectDir ".git")) {
+            Write-Status "Publishing to GitHub..." "Cyan"
+            Invoke-Logged {
+                git -C $projectDir add -A
+                git -C $projectDir commit -m ("Update report " + (Get-Date -Format "yyyy-MM-dd"))
+                git -C $projectDir push
+            }
+            if ($LASTEXITCODE -eq 0) {
+                Write-Status "Published to GitHub Pages." "Green"
+            }
+            else {
+                Write-Status "Publish finished with warnings (no remote/auth yet, or nothing new to push)." "Yellow"
+            }
+        }
     }
     else {
         Write-Status "Report generation failed (exit $exitCode). Review the output above." "Red"
