@@ -660,23 +660,34 @@ def generate_report(
         return LOOSE_THRESHOLDS if keyword.casefold() in loose else STRICT_THRESHOLDS
 
     # 各關鍵詞用自己的門檻判定；同一支影片只要在任一關鍵詞達標即列入 TOP 10。
+    # 長影片與 Shorts 分開累計，各自產出一份全域 TOP 10。
     keyword_breakouts: dict[str, list[tuple[Video, Channel, list[str]]]] = {}
     keyword_long_counts: dict[str, int] = {}
+    keyword_shorts_counts: dict[str, int] = {}
     global_qualifying: dict[str, tuple[Video, Channel, list[str]]] = {}
+    global_shorts_qualifying: dict[str, tuple[Video, Channel, list[str]]] = {}
 
     for keyword in keywords:
         thresholds = thresholds_for(keyword)
         entries: list[tuple[Video, Channel, list[str]]] = []
         long_count = 0
+        shorts_count = 0
         for video_id in dict.fromkeys(keyword_to_ids.get(keyword, [])):
             video = videos.get(video_id)
-            if not video or is_short_form(video):
+            if not video:
                 continue
-            long_count += 1
             channel = channels.get(video.channel_id)
             if not channel:
                 continue
             reasons = breakout_reasons(video, channel, thresholds)
+            if is_short_form(video):
+                shorts_count += 1
+                if reasons:
+                    previous = global_shorts_qualifying.get(video_id)
+                    if previous is None or len(reasons) > len(previous[2]):
+                        global_shorts_qualifying[video_id] = (video, channel, reasons)
+                continue
+            long_count += 1
             if reasons:
                 entries.append((video, channel, reasons))
                 previous = global_qualifying.get(video_id)
@@ -685,9 +696,13 @@ def generate_report(
         entries.sort(key=lambda item: _sort_key(item, now), reverse=True)
         keyword_breakouts[keyword] = entries
         keyword_long_counts[keyword] = long_count
+        keyword_shorts_counts[keyword] = shorts_count
 
     ranked = sorted(
         global_qualifying.values(), key=lambda item: _sort_key(item, now), reverse=True
+    )
+    shorts_ranked = sorted(
+        global_shorts_qualifying.values(), key=lambda item: _sort_key(item, now), reverse=True
     )
     loose_display = [keyword for keyword in keywords if keyword.casefold() in loose]
 
@@ -697,8 +712,10 @@ def generate_report(
         f"- 搜尋期間：{(now - timedelta(days=SEARCH_DAYS)):%Y-%m-%d} 至 {now:%Y-%m-%d}（UTC）",
         "- 搜尋範圍：全球（未限制地區與語言）",
         f"- 關鍵詞數：{len(keywords)}",
-        f"- 長影片候選（去重）：{len(videos)}",
-        f"- 爆款影片：{len(global_qualifying)}",
+        f"- 長影片候選（去重）：{sum(1 for v in videos.values() if not is_short_form(v))}",
+        f"- Shorts 候選（去重）：{sum(1 for v in videos.values() if is_short_form(v))}",
+        f"- 長影片爆款：{len(global_qualifying)}",
+        f"- Shorts 爆款：{len(global_shorts_qualifying)}",
         f"- 本次 API 配額估算：{quota_used:,} 點",
     ]
     if loose_display:
@@ -711,6 +728,12 @@ def generate_report(
     else:
         lines.append("本週沒有找到符合條件的影片。")
 
+    lines.extend(["", "## YouTube Shorts 本週爆款 TOP 10", ""])
+    if shorts_ranked:
+        append_video_table(lines, shorts_ranked[:10], now)
+    else:
+        lines.append("本週沒有找到符合條件的 Shorts。")
+
     for keyword in keywords:
         suffix = "（寬鬆門檻）" if keyword.casefold() in loose else ""
         lines.extend(["", f"## {markdown_text(keyword)}{suffix}", ""])
@@ -718,7 +741,9 @@ def generate_report(
         entries = keyword_breakouts.get(keyword, [])
         lines.append(
             f"- 診斷：搜尋 {searched} 支 → 長影片 "
-            f"{keyword_long_counts.get(keyword, 0)} 支 → 爆款 {len(entries)} 支"
+            f"{keyword_long_counts.get(keyword, 0)} 支（Shorts "
+            f"{keyword_shorts_counts.get(keyword, 0)} 支另計入 Shorts TOP 10）→ "
+            f"爆款 {len(entries)} 支"
         )
         lines.append("")
         if entries:
@@ -733,7 +758,8 @@ def generate_report(
             "",
             "排序分數：近 7 天發布新鮮度與播放/訂閱比各占 50%；訂閱數隱藏時比例分數記為 0。",
             "診斷：搜尋＝該關鍵詞搜回的影片數；長影片＝排除 Shorts 後可評分的數量；爆款＝達標數。",
-            "已排除時長 < 120 秒、或標題標註 #shorts 的短影音。",
+            "時長 < 120 秒、或標題標註 #shorts 者視為 Shorts，不計入長影片榜，"
+            "改用同一套門檻另外計入「YouTube Shorts 本週爆款 TOP 10」。",
             "嚴格門檻（符合任一）：小於 1 千訂閱播放達 1 萬、小於 1 萬訂閱播放達 10 萬、"
             "播放達訂閱數 5 倍，或播放達頻道平均 5 倍（且播放 ≥ 5 萬）。",
             "寬鬆門檻（標示「寬鬆門檻」的關鍵詞）：小於 1 千訂閱播放達 5 千、"
@@ -792,12 +818,7 @@ def run_report(
     channels: dict[str, Channel] = {}
     try:
         videos = api.get_videos(unique_video_ids)
-        # 先排除 Shorts，再依實際需要查詢頻道，節省 channels.list 配額。
-        videos = {
-            video_id: video
-            for video_id, video in videos.items()
-            if not is_short_form(video)
-        }
+        # 保留所有影片（含 Shorts），讓 generate_report 分別產出長影片與 Shorts 排行。
         for keyword, ids in keyword_to_ids.items():
             for video_id in ids:
                 if video_id in videos:

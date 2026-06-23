@@ -210,7 +210,38 @@ class RadarTests(unittest.TestCase):
             101,
         )
         # 搜尋 2 支（含一個未補抓到的 ID）→ 長影片 1 支 → 爆款 1 支
-        self.assertIn("診斷：搜尋 2 支 → 長影片 1 支 → 爆款 1 支", report)
+        self.assertIn(
+            "診斷：搜尋 2 支 → 長影片 1 支（Shorts 0 支另計入 Shorts TOP 10）→ 爆款 1 支",
+            report,
+        )
+
+    def test_shorts_get_their_own_top10_and_are_excluded_from_long_video_ranking(self):
+        long_video = make_video(
+            video_id="long-1", duration_seconds=600, views=10_000
+        )
+        short_video = make_video(
+            video_id="short-1",
+            title="Short Clip #shorts",
+            duration_seconds=45,
+            views=10_000,
+        )
+        channel = make_channel(subscribers=100)
+        report = generate_report(
+            ["Codex"],
+            {"Codex": [long_video.video_id, short_video.video_id]},
+            {long_video.video_id: long_video, short_video.video_id: short_video},
+            {channel.channel_id: channel},
+            NOW,
+            101,
+        )
+        self.assertIn("## YouTube Shorts 本週爆款 TOP 10", report)
+        self.assertIn("Short Clip", report)
+        self.assertIn("- Shorts 候選（去重）：1", report)
+        self.assertIn("- Shorts 爆款：1", report)
+        self.assertIn("- 長影片候選（去重）：1", report)
+        # Shorts 不應混入長影片的「本週爆款 TOP 10」區塊。
+        top10_section = report.split("## 本週爆款 TOP 10")[1].split("## YouTube Shorts")[0]
+        self.assertNotIn("Short Clip", top10_section)
 
     def test_load_loose_keywords_parses_and_casefolds(self):
         with patch.dict(
