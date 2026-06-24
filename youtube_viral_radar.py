@@ -809,6 +809,17 @@ def generate_report(
         lines.append(
             "- 寬鬆門檻關鍵詞：" + "、".join(markdown_text(k) for k in loose_display)
         )
+
+    lines.extend(["", "## 本週各領域趨勢發現", ""])
+    for keyword in keywords:
+        comment = _keyword_trend_comment(
+            keyword,
+            keyword_breakouts.get(keyword, []),
+            keyword_candidates.get(keyword, []),
+            now,
+        )
+        lines.append(f"- **{markdown_text(keyword)}**：{comment}")
+
     lines.extend(["", "## 本週爆款 TOP 10", ""])
     if ranked:
         append_video_table(lines, ranked[:10], now)
@@ -844,6 +855,7 @@ def generate_report(
             "---",
             "",
             "排序分數：近 7 天發布新鮮度與播放/訂閱比各占 50%；訂閱數隱藏時比例分數記為 0。",
+            "各領域趨勢發現：依當週影片標題高頻詞、最高熱度影片與主要入選原因自動歸納（純數據，未使用 AI）。",
             "診斷：搜尋＝該關鍵詞搜回的影片數；長影片＝排除 Shorts 後可評分的數量；爆款＝達標數。",
             "時長 < 120 秒、或標題標註 #shorts 者視為 Shorts，不計入長影片榜，"
             "改用同一套門檻另外計入「YouTube Shorts 本週爆款 TOP 10」。",

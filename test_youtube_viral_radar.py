@@ -198,6 +198,35 @@ class RadarTests(unittest.TestCase):
         self.assertIn("（寬鬆門檻）", loose_report)
         self.assertIn("寬鬆門檻關鍵詞：Google Gemini", loose_report)
 
+    def test_report_includes_trend_section_with_common_term(self):
+        # 趨勢區塊應出現，並抓出反覆出現的主題詞（fable）與最高熱度影片。
+        channel = make_channel(subscribers=100)
+        v1 = make_video(
+            video_id="v1", title="Claude Fable 5 review deep dive", views=50_000
+        )
+        v2 = make_video(
+            video_id="v2", title="Testing Fable on a real project", views=20_000
+        )
+        report = generate_report(
+            ["Claude Code"],
+            {"Claude Code": ["v1", "v2"]},
+            {"v1": v1, "v2": v2},
+            {channel.channel_id: channel},
+            NOW,
+            101,
+        )
+        self.assertIn("## 本週各領域趨勢發現", report)
+        self.assertIn("**Claude Code**", report)
+        self.assertIn("熱門詞：fable", report)
+        self.assertIn("熱度最高", report)
+
+    def test_trend_section_handles_keyword_with_no_videos(self):
+        report = generate_report(
+            ["Codex"], {"Codex": []}, {}, {}, NOW, 101
+        )
+        self.assertIn("## 本週各領域趨勢發現", report)
+        self.assertIn("**Codex**：本週無相關影片資料。", report)
+
     def test_report_includes_per_keyword_diagnostic(self):
         video = make_video()
         channel = make_channel(subscribers=100)
