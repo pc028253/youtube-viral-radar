@@ -645,6 +645,89 @@ def append_video_table(
         )
 
 
+# 趨勢摘要用的停用詞（不具辨識度的常見字），萃取高頻詞時排除。
+_TREND_STOPWORDS = {
+    "the", "a", "an", "to", "of", "in", "for", "with", "and", "or", "on", "is", "are",
+    "be", "my", "you", "your", "this", "that", "it", "its", "how", "what", "why", "when",
+    "i", "me", "we", "us", "vs", "new", "best", "top", "use", "using", "make", "made",
+    "get", "got", "do", "does", "did", "can", "will", "just", "now", "not", "from",
+    "ai", "video", "videos", "youtube", "tutorial", "review", "guide", "ep",
+    "教學", "教程", "介紹", "完整", "最新", "如何", "這個", "影片", "頻道", "訂閱",
+}
+
+
+def _trend_tokens(text: str) -> set[str]:
+    # 從標題抽出可當「主題詞」的 token：英數詞（≥2 字）與短中文詞（2–4 字）。
+    lower = text.lower()
+    english = re.findall(r"[a-z][a-z0-9+#.]+", lower)
+    chinese = [run for run in re.findall(r"[㐀-鿿]+", text) if 2 <= len(run) <= 4]
+    tokens: set[str] = set()
+    for token in english + chinese:
+        token = token.strip(".")
+        if len(token) >= 2 and not token.isdigit():
+            tokens.add(token)
+    return tokens
+
+
+def _common_terms(titles: list[str], keyword: str, limit: int = 3) -> list[str]:
+    # 以「出現於幾支影片」（document frequency）找反覆出現的主題詞。
+    keyword_tokens = _trend_tokens(keyword)
+    frequency: dict[str, int] = {}
+    for title in titles:
+        for token in _trend_tokens(title):
+            if token in _TREND_STOPWORDS or token in keyword_tokens:
+                continue
+            frequency[token] = frequency.get(token, 0) + 1
+    common = sorted(
+        ((term, count) for term, count in frequency.items() if count >= 2),
+        key=lambda item: (-item[1], item[0]),
+    )
+    return [term for term, _ in common[:limit]]
+
+
+def _readable_views(value: int) -> str:
+    return f"{value / 10_000:.1f} 萬" if value >= 10_000 else f"{value:,}"
+
+
+def _keyword_trend_comment(
+    keyword: str,
+    breakout_entries: list[tuple[Video, Channel, list[str]]],
+    candidate_videos: list[Video],
+    now: datetime,
+) -> str:
+    # 依當週數據自動歸納單一領域的趨勢（不使用 AI）。
+    breakout_videos = [video for video, _, _ in breakout_entries]
+    material = breakout_videos or candidate_videos
+    if not material:
+        return "本週無相關影片資料。"
+
+    parts: list[str] = []
+    if breakout_videos:
+        parts.append(f"{len(breakout_videos)} 支爆款")
+    else:
+        parts.append(f"無爆款（{len(candidate_videos)} 支候選）")
+
+    top = max(material, key=lambda video: video.views)
+    top_title = top.title.strip()
+    if len(top_title) > 30:
+        top_title = top_title[:30] + "…"
+    parts.append(f"熱度最高〈{markdown_text(top_title)}〉約 {_readable_views(top.views)}次")
+
+    terms = _common_terms([video.title for video in material], keyword)
+    if terms:
+        parts.append("熱門詞：" + "、".join(terms))
+
+    reason_frequency: dict[str, int] = {}
+    for _, _, reasons in breakout_entries:
+        for reason in reasons:
+            reason_frequency[reason] = reason_frequency.get(reason, 0) + 1
+    if reason_frequency:
+        dominant = max(reason_frequency.items(), key=lambda item: item[1])[0]
+        parts.append(f"多因「{dominant}」")
+
+    return "；".join(parts) + "。"
+
+
 def generate_report(
     keywords: list[str],
     keyword_to_ids: dict[str, list[str]],
@@ -662,6 +745,7 @@ def generate_report(
     # 各關鍵詞用自己的門檻判定；同一支影片只要在任一關鍵詞達標即列入 TOP 10。
     # 長影片與 Shorts 分開累計，各自產出一份全域 TOP 10。
     keyword_breakouts: dict[str, list[tuple[Video, Channel, list[str]]]] = {}
+    keyword_candidates: dict[str, list[Video]] = {}
     keyword_long_counts: dict[str, int] = {}
     keyword_shorts_counts: dict[str, int] = {}
     global_qualifying: dict[str, tuple[Video, Channel, list[str]]] = {}
@@ -670,6 +754,7 @@ def generate_report(
     for keyword in keywords:
         thresholds = thresholds_for(keyword)
         entries: list[tuple[Video, Channel, list[str]]] = []
+        candidates: list[Video] = []
         long_count = 0
         shorts_count = 0
         for video_id in dict.fromkeys(keyword_to_ids.get(keyword, [])):
@@ -679,6 +764,7 @@ def generate_report(
             channel = channels.get(video.channel_id)
             if not channel:
                 continue
+            candidates.append(video)
             reasons = breakout_reasons(video, channel, thresholds)
             if is_short_form(video):
                 shorts_count += 1
@@ -695,6 +781,7 @@ def generate_report(
                     global_qualifying[video_id] = (video, channel, reasons)
         entries.sort(key=lambda item: _sort_key(item, now), reverse=True)
         keyword_breakouts[keyword] = entries
+        keyword_candidates[keyword] = candidates
         keyword_long_counts[keyword] = long_count
         keyword_shorts_counts[keyword] = shorts_count
 
