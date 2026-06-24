@@ -1,0 +1,19 @@
+﻿[2026-06-24 10:05:51] Report run started
+[2026-06-24 10:05:51] Generating the YouTube viral radar report...
+搜尋關鍵詞 1/7：Codex（全球）
+搜尋關鍵詞 2/7：Claude Code（全球）
+搜尋關鍵詞 3/7：AI Agent（全球）
+搜尋關鍵詞 4/7：Google Gemini（全球）
+搜尋關鍵詞 5/7：ChatGPT（全球）
+搜尋關鍵詞 6/7：AI one person business（全球）
+搜尋關鍵詞 7/7：AI content creator（全球）
+寬鬆門檻關鍵詞：AI Agent、Google Gemini、ChatGPT
+今日已消耗配額（太平洋時間，本機帳本估算）：713 點
+本次搜尋預估配額：700 點，預估執行後當日累計：1,413 / 每日上限 10,000 點
+週報已產生：C:\Users\huang\OneDrive\Documenti\Report Agent\週報-2026-06-24.md
+本次實際消耗 API 配額（估算）：713 點
+今日累計實際消耗（本機帳本估算）：1,426 點 / 每日上限 10,000 點
+[2026-06-24 10:06:01] Report generated successfully.
+[2026-06-24 10:06:01] Building mobile site (build_site.py)...
+已建站：13 份報表 → C:\Users\huang\OneDrive\Documenti\Report Agent\docs
+[2026-06-24 10:06:01] Publishing to GitHub...
