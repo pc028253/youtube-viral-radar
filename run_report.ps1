@@ -44,6 +44,23 @@ function Invoke-Logged {
     }
 }
 
+function Wait-ForNetwork {
+    # Wait until DNS for the API host resolves, so a 10:00 run right after boot
+    # (network not ready yet) does not fail. Returns once reachable, or gives up.
+    param([int]$MaxTries = 15, [int]$DelaySeconds = 20)
+    for ($i = 1; $i -le $MaxTries; $i++) {
+        try {
+            [System.Net.Dns]::GetHostEntry("www.googleapis.com") | Out-Null
+            return $true
+        }
+        catch {
+            Write-Status "Network not ready (attempt $i of $MaxTries); waiting $DelaySeconds s..." "Yellow"
+            Start-Sleep -Seconds $DelaySeconds
+        }
+    }
+    return $false
+}
+
 # Start each scheduled run with a fresh log (latest run only).
 if ($LogPath) {
     ("[{0}] Report run started" -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss")) |
@@ -78,6 +95,9 @@ if (-not $python) {
     $exitCode = 1
 }
 else {
+    if (-not (Wait-ForNetwork)) {
+        Write-Status "Network still unavailable after waiting; proceeding (run may fail gracefully)." "Yellow"
+    }
     Write-Status "Generating the YouTube viral radar report..." "Cyan"
     Push-Location $projectDir
     try {
