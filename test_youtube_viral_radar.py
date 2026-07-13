@@ -14,16 +14,19 @@ from youtube_viral_radar import (
     YouTubeAPI,
     breakout_reasons,
     composite_score,
+    compute_keyword_breakout_summary,
     estimate_search_quota,
     format_duration,
     generate_report,
     is_short_form,
     load_daily_quota_limit,
+    load_keyword_history,
     load_keywords,
     load_loose_keywords,
     load_quota_usage,
     parse_duration,
     quota_day_key,
+    record_keyword_history,
     record_quota_usage,
     subscriber_ratio,
 )
@@ -98,16 +101,19 @@ class RadarTests(unittest.TestCase):
 
     def test_channel_average_rule_qualifies_video(self):
         # 第 4 條：播放量達頻道平均 5 倍且達絕對門檻（5 萬）才入選。
+        # 這條是唯一達標理由時，會附註「訊號較弱」提醒讀者這不是強訊號。
         channel = make_channel(
             subscribers=500_000, total_views=1_000_000, video_count=100
         )  # 平均播放 = 10,000
         self.assertIn(
-            "播放達頻道平均 5 倍",
+            "播放達頻道平均 5 倍（訊號較弱：僅頻道自身平均達標）",
             breakout_reasons(make_video(views=60_000), channel),
         )
-        self.assertNotIn(
-            "播放達頻道平均 5 倍",
-            breakout_reasons(make_video(views=40_000), channel),
+        self.assertFalse(
+            any(
+                "播放達頻道平均 5 倍" in reason
+                for reason in breakout_reasons(make_video(views=40_000), channel)
+            )
         )
 
     def test_channel_average_rule_requires_absolute_view_floor(self):
@@ -117,7 +123,7 @@ class RadarTests(unittest.TestCase):
         )  # 平均播放 = 2,000
         self.assertEqual(breakout_reasons(make_video(views=12_000), small_base), [])
         self.assertIn(
-            "播放達頻道平均 5 倍",
+            "播放達頻道平均 5 倍（訊號較弱：僅頻道自身平均達標）",
             breakout_reasons(make_video(views=60_000), small_base),
         )
 
@@ -157,7 +163,7 @@ class RadarTests(unittest.TestCase):
             video_count=200,
         )  # 平均播放 = 10,000
         reasons = breakout_reasons(make_video(views=1_000_000), hidden)
-        self.assertEqual(reasons, ["播放達頻道平均 5 倍"])
+        self.assertEqual(reasons, ["播放達頻道平均 5 倍（訊號較弱：僅頻道自身平均達標）"])
 
         # 沒有平均資料時，隱藏訂閱數的頻道不會入選。
         hidden_no_avg = make_channel(subscribers=None, subscribers_hidden=True)
@@ -476,6 +482,91 @@ class RadarTests(unittest.TestCase):
         self.assertIsNone(channels["channel-2"].subscribers)
         self.assertTrue(channels["channel-2"].subscribers_hidden)
         self.assertEqual(channels["channel-2"].average_views, 10000.0)
+
+    def test_report_includes_language_column(self):
+        # 「語言」欄應出現在表格標題列，不論 langdetect 是否安裝都不應讓報表崩潰。
+        video = make_video()
+        channel = make_channel(subscribers=100)
+        report = generate_report(
+            ["Codex"],
+            {"Codex": [video.video_id]},
+            {video.video_id: video},
+            {channel.channel_id: channel},
+            NOW,
+            101,
+        )
+        self.assertIn("語言", report)
+
+    def test_keyword_history_round_trip_and_pruning(self):
+        # 帳本應可讀回剛寫入的資料，且只保留最近 KEYWORD_HISTORY_WEEKS 週。
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "keyword_history.json"
+            self.assertEqual(load_keyword_history(path), {})
+
+            for offset in range(8):
+                day = NOW + timedelta(days=offset)
+                record_keyword_history(
+                    day, {"Codex": {"count": offset, "channel_ids": ["c1"]}}, path
+                )
+
+            history = load_keyword_history(path)
+            self.assertLessEqual(len(history), 6)
+            last_day = f"{NOW + timedelta(days=7):%Y-%m-%d}"
+            self.assertIn(last_day, history)
+            self.assertEqual(history[last_day]["Codex"]["count"], 7)
+
+    def test_compute_keyword_breakout_summary_matches_report_counts(self):
+        # 獨立計算的爆款數/頻道名單，應與 generate_report 內顯示的數字一致。
+        video = make_video(views=50_000)
+        channel = make_channel(subscribers=500)  # < 1 千訂閱，播放達 1 萬即達標
+        summary = compute_keyword_breakout_summary(
+            ["Codex"],
+            {"Codex": [video.video_id]},
+            {video.video_id: video},
+            {channel.channel_id: channel},
+            NOW,
+        )
+        self.assertEqual(summary["Codex"]["count"], 1)
+        self.assertEqual(summary["Codex"]["channel_ids"], ["channel-1"])
+
+    def test_report_shows_week_over_week_trend_with_history(self):
+        # 有歷史帳本時，趨勢摘要應顯示週對週比較，且出現「近幾週爆款趨勢」表格。
+        video = make_video(views=50_000)
+        channel = make_channel(subscribers=500)
+        history = {
+            f"{(NOW - timedelta(days=7)):%Y-%m-%d}": {
+                "Codex": {"count": 3, "channel_ids": ["other-channel"]}
+            }
+        }
+        report = generate_report(
+            ["Codex"],
+            {"Codex": [video.video_id]},
+            {video.video_id: video},
+            {channel.channel_id: channel},
+            NOW,
+            101,
+            history=history,
+        )
+        self.assertIn("近幾週爆款趨勢", report)
+        self.assertIn("較上週（3 支）減少", report)
+        self.assertIn("新進榜頻道 1 個", report)
+
+    def test_report_has_no_week_over_week_comparison_without_history(self):
+        # 沒有歷史帳本（例如第一次執行）時，不應出現無意義的週對週比較文字。
+        video = make_video()
+        channel = make_channel(subscribers=100)
+        report = generate_report(
+            ["Codex"],
+            {"Codex": [video.video_id]},
+            {video.video_id: video},
+            {channel.channel_id: channel},
+            NOW,
+            101,
+        )
+        self.assertNotIn("較上週", report)
+        # 註：底部圖例固定會提及「近幾週爆款趨勢」這個功能名稱做說明，
+        # 因此這裡只檢查該區塊「標題」沒有被產生，而不是檢查整份報表都不含這個詞。
+        self.assertNotIn("## 近幾週爆款趨勢", report)
 
 
 if __name__ == "__main__":
