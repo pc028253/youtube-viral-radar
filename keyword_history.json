@@ -1,73 +1,4 @@
 {
-  "2026-10-01": {
-    "Codex": {
-      "count": 4,
-      "channel_ids": [
-        "UC-bM1nKCilS0JyEe6qEEgSg",
-        "UCydMNKbVw1LHxXVq2GkvGdw",
-        "UCOmcA3f_RrH6b9NmcNa4tdg",
-        "UC86HxrAQ4GS1Iq8LIvUYigQ"
-      ]
-    },
-    "Claude Code": {
-      "count": 6,
-      "channel_ids": [
-        "UCuAJMFoUSqtc26C_OIsoKyQ",
-        "UC_a85mUHqsy5j0CYCgLnkEQ",
-        "UCVARwuMmqP4tqQFUQm57oQQ",
-        "UCuFdW0jIctCUSVqXtr5ImIA",
-        "UCxyjuN1Xjm3Nq88Qy4EaWvA",
-        "UCoy6cTJ7Tg0dqS-DI-_REsA"
-      ]
-    },
-    "AI Agent": {
-      "count": 11,
-      "channel_ids": [
-        "UCcvqik_5eJwEUCYoLj6_3ZA",
-        "UCLX9HF0CKKiBSkkhqpYGxgQ",
-        "UCN-RmYp-hd6FgZjw4405QgQ",
-        "UCV_DLB3VW0szIGQnwel1Nsw",
-        "UCmeU2DYiVy80wMBGZzEWnbw",
-        "UC2WmuBuFq6gL08QYG-JjXKw",
-        "UC_Kvz3mbTwLOyJzFPHmDwKQ",
-        "UCxYBda_YEwafkLiBC6bU0hA",
-        "UCYEHmQ-b1iC02-LMeseQsvw",
-        "UChqUTb7kYRX8-EiaN3XFrSQ",
-        "UC8p1vwvWtl6T73JiExfWs1g"
-      ]
-    },
-    "Google Gemini": {
-      "count": 1,
-      "channel_ids": [
-        "UCHMjsLKv6MkrmHnx4HrGndQ"
-      ]
-    },
-    "ChatGPT": {
-      "count": 3,
-      "channel_ids": [
-        "UCU2ZDEg996X4jsCrTv6cpVA",
-        "UCvFpyDAGBGc80-PcRU5WPIg",
-        "UCKjU3KzdbJE1EFcHVqXC3_g"
-      ]
-    },
-    "AI one person business": {
-      "count": 0,
-      "channel_ids": []
-    },
-    "AI content creator": {
-      "count": 8,
-      "channel_ids": [
-        "UCc-TtqRqPyXRKZxqyTuvDfw",
-        "UCmCctsrzrhzlHCs1VLRMf0Q",
-        "UCMxaF4VRY-o2P3211nztA2A",
-        "UC8BmrRtDidyu6w6GGriB51w",
-        "UCcsmm9lnpSBdJG6GLeVOu9w",
-        "UCHvGdB3McUYL6pTKFo7TI2A",
-        "UCJ-bQ6CW4CtLWix1-k1IPtw",
-        "UCNs1mC0zegUN3V34iw9JqVA"
-      ]
-    }
-  },
   "2026-10-04": {
     "Codex": {
       "count": 7,
@@ -493,6 +424,91 @@
         "UC992HJoCVIIES00j7FvyrVg",
         "UCzwgbznYcl7rxry2qKkt6sg",
         "UCPsSnSR7ymSE8on3wafNbqg"
+      ]
+    }
+  },
+  "2026-10-11": {
+    "Codex": {
+      "count": 7,
+      "channel_ids": [
+        "UC-HJpp2os-n_UmG5l1k_1tA",
+        "UCyi5IQwZyu-9l3GHeQYXQzw",
+        "UCtlNErjbGBp4bRquQgxIZ0g",
+        "UCtlNErjbGBp4bRquQgxIZ0g",
+        "UCtlNErjbGBp4bRquQgxIZ0g",
+        "UCtlNErjbGBp4bRquQgxIZ0g",
+        "UCntGhimQ0cQCMIYQizseVFg"
+      ]
+    },
+    "Claude Code": {
+      "count": 11,
+      "channel_ids": [
+        "UCxh5da7n_d5IWhHB42STmSg",
+        "UC_a85mUHqsy5j0CYCgLnkEQ",
+        "UC4wbCxRPSrkbp5BNsNczbIQ",
+        "UCgscS8mBsQZ5sFRkJIFWD7Q",
+        "UC2WmuBuFq6gL08QYG-JjXKw",
+        "UC7vgoI5o3Eik81K6nwd1_eQ",
+        "UCoy6cTJ7Tg0dqS-DI-_REsA",
+        "UCXihi0rkG9rMRWTFVTjdLlw",
+        "UCgscS8mBsQZ5sFRkJIFWD7Q",
+        "UCDoFiMhpOnLFq1uG4RL4xag",
+        "UCrJrY9gMcbRL2APnFCXiuBQ"
+      ]
+    },
+    "AI Agent": {
+      "count": 11,
+      "channel_ids": [
+        "UCx0PZmCXTyqiCd07Kemrp5A",
+        "UC2_X9JyHWEPtSatHfVmglcA",
+        "UCCNBjB4bwVtcoRjFH-q8hYg",
+        "UCnjgxChqYYnyoqO4k_Q1d6Q",
+        "UCNyBkFPz_IPWainccK0YbOA",
+        "UCZ9m4KOh8Ei60428xeGYDCQ",
+        "UCkdnY2hNC0sdlVXPtWuNQ8g",
+        "UCrp_UI8XtuYfpiqluWLD7Lw",
+        "UCgw_3Epv7swquSZyMDjYHTg",
+        "UCGpsgNbzdF7BECCVbB1COHw",
+        "UCVgO39Bk5sMo66-6o6Spn6Q"
+      ]
+    },
+    "Google Gemini": {
+      "count": 3,
+      "channel_ids": [
+        "UCdE5kxoPtPekr_R_kIofhhw",
+        "UC8oBIE88TrCD1b-gnVqXzgw",
+        "UCl5-lvQyfILb-l2abPk4Ntg"
+      ]
+    },
+    "ChatGPT": {
+      "count": 6,
+      "channel_ids": [
+        "UCRok6KkKJ6dD4sffMnqx5Pg",
+        "UCB_Nqtx7idLvjb1XDJYypyg",
+        "UCrJrY9gMcbRL2APnFCXiuBQ",
+        "UCUWRBES836QDNDT5jiIIj1A",
+        "UCGi_SASiOZwMqq5Surm8BnA",
+        "UCmeU2DYiVy80wMBGZzEWnbw"
+      ]
+    },
+    "AI one person business": {
+      "count": 2,
+      "channel_ids": [
+        "UCeDm4TsgOMPE-fZt_lnYOxQ",
+        "UCgugjY9T1jv41UcKmaZ5NLQ"
+      ]
+    },
+    "AI content creator": {
+      "count": 8,
+      "channel_ids": [
+        "UC992HJoCVIIES00j7FvyrVg",
+        "UCzwgbznYcl7rxry2qKkt6sg",
+        "UCao1RBM7AS1cvERB0zlAFUg",
+        "UCKEPUdAa6F0JTRQmU3e5jnQ",
+        "UCwwXrsAjgG60_rm-T83ol2g",
+        "UCBovNpFWv8XT3WNG1fnmgyA",
+        "UCPsSnSR7ymSE8on3wafNbqg",
+        "UCSYbjDgZx0au48cvI6RUSAg"
       ]
     }
   }
