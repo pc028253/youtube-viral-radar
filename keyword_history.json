@@ -474,7 +474,7 @@
       ]
     },
     "Claude Code": {
-      "count": 20,
+      "count": 19,
       "channel_ids": [
         "UCXJ1ANA5KLnSUWkIzBMFUgw",
         "UCSz4XCfgNTaZJOGztt2adRQ",
@@ -483,7 +483,6 @@
         "UCeAbrXXA8lLr-jQAWKJ8Qsg",
         "UC6GdOjjrCU5qmXXADpmyTDA",
         "UCNssyoLJiA2oB5xM7XjxmJA",
-        "UCyHnA-g1oUHzGALhobCoO_w",
         "UCTBXYgMUEN-EPl9f5TzOwVA",
         "UC3KK7ENB_ierAXvrxVNnbZQ",
         "UC_cm35PBHvAHEklTqYyPtww",
@@ -512,26 +511,28 @@
       ]
     },
     "Google Gemini": {
-      "count": 3,
+      "count": 4,
       "channel_ids": [
+        "UCKHVXTuahhhZFhhu_SfTyWA",
         "UC2mPtIOYm1XihpmfrJKXjMw",
         "UCWOM-v9Nl2mGem5PlktFLqg",
         "UC2WmuBuFq6gL08QYG-JjXKw"
       ]
     },
     "ChatGPT": {
-      "count": 0,
-      "channel_ids": []
+      "count": 2,
+      "channel_ids": [
+        "UC1gi2usJsZdoY2VW1as3Evg",
+        "UClPRwe212FglaJepsIgURWg"
+      ]
     },
     "AI one person business": {
       "count": 0,
       "channel_ids": []
     },
     "AI content creator": {
-      "count": 1,
-      "channel_ids": [
-        "UCMxaF4VRY-o2P3211nztA2A"
-      ]
+      "count": 0,
+      "channel_ids": []
     }
   }
 }
