@@ -1,85 +1,4 @@
 {
-  "2026-10-31": {
-    "Codex": {
-      "count": 7,
-      "channel_ids": [
-        "UCOzOcpGK6w8RM4bGnEI2e5g",
-        "UC5KNuaHbrw_IJ5iNZDkbZ-g",
-        "UCxJHl8YxC3e9uHMZZWu_jkg",
-        "UCwsP4_k3gYhRWz-1kTetgew",
-        "UC-hFgSev3WsmCOQT_rqm6gQ",
-        "UCuFdW0jIctCUSVqXtr5ImIA",
-        "UCtlNErjbGBp4bRquQgxIZ0g"
-      ]
-    },
-    "Claude Code": {
-      "count": 17,
-      "channel_ids": [
-        "UCOzOcpGK6w8RM4bGnEI2e5g",
-        "UCXJ1ANA5KLnSUWkIzBMFUgw",
-        "UCbMlkb79E12CwveGAtdFj-A",
-        "UCgscS8mBsQZ5sFRkJIFWD7Q",
-        "UCBuc6_pT7nzES1xTRKGGOlA",
-        "UCyHnA-g1oUHzGALhobCoO_w",
-        "UC6GdOjjrCU5qmXXADpmyTDA",
-        "UCyHnA-g1oUHzGALhobCoO_w",
-        "UCTdw38Cw6jcm0atBPA39a0Q",
-        "UCyHnA-g1oUHzGALhobCoO_w",
-        "UCTBXYgMUEN-EPl9f5TzOwVA",
-        "UCJ4kowXyOZegFCHJXwgrSpA",
-        "UCFV3j-V6aESI35hwHYrno9Q",
-        "UC3KK7ENB_ierAXvrxVNnbZQ",
-        "UCelfWQr9sXVMTvBzviPGlFw",
-        "UCcz_GEYeb44A2JE7vtTR_ig",
-        "UCcYKjf55fmOsJW_on8UIs9w"
-      ]
-    },
-    "AI Agent": {
-      "count": 11,
-      "channel_ids": [
-        "UCL7sfW_eJi2iE2iv01LmRiw",
-        "UCSZIWbIj5rI4GmzTMOX4zfQ",
-        "UCkbjWQ7kLFNRY_RiJbqVWRg",
-        "UCRYY7IEbkHLH_ScJCu9eWDQ",
-        "UCG3YPQS6W0bHdru5vOGMj0A",
-        "UC0_M9eztZvetcyLAb5f-o5w",
-        "UC4fHzgFze5ETT2O2RamvoYg",
-        "UCuvjQYKukKjVyhSVxQibgOw",
-        "UCZpk9Hr33dOAw3HIbqPyWPQ",
-        "UCbMlkb79E12CwveGAtdFj-A",
-        "UCqlYzSgsh5jdtWYfVIBoTDw"
-      ]
-    },
-    "Google Gemini": {
-      "count": 2,
-      "channel_ids": [
-        "UCKHVXTuahhhZFhhu_SfTyWA",
-        "UC2WmuBuFq6gL08QYG-JjXKw"
-      ]
-    },
-    "ChatGPT": {
-      "count": 2,
-      "channel_ids": [
-        "UCgyM5QPABP5JTp-LlOij20A",
-        "UC1gi2usJsZdoY2VW1as3Evg"
-      ]
-    },
-    "AI one person business": {
-      "count": 1,
-      "channel_ids": [
-        "UCLOzkJ9W9fntCGyYfUwMPew"
-      ]
-    },
-    "AI content creator": {
-      "count": 4,
-      "channel_ids": [
-        "UC1XFxMVRpOuxQQdCMWJdmwg",
-        "UCOPF9JjEbqjGdD2cqSht1pw",
-        "UCuvjQYKukKjVyhSVxQibgOw",
-        "UCStDO_HH4dqNiByResYmvNA"
-      ]
-    }
-  },
   "2026-11-01": {
     "Codex": {
       "count": 5,
@@ -480,6 +399,92 @@
       "count": 1,
       "channel_ids": [
         "UCmcRJBSAlOVxIRNMjERlCLA"
+      ]
+    }
+  },
+  "2026-11-06": {
+    "Codex": {
+      "count": 7,
+      "channel_ids": [
+        "UCawDIu4mKRDig24LN5HJ7Pg",
+        "UCeguFSV3QVM9U87gVvEA_Ww",
+        "UC5-MXvkecEBaIHtvVsIzcEw",
+        "UCKC1RdkeJfkz4fGnmzQ3hXQ",
+        "UCn-Q7NHWqJvnoJh_phYBa0Q",
+        "UCn8NCV1Iw_SGsw3tz0D0qtQ",
+        "UC97T1n3KUWpKi5JwINDB4EQ"
+      ]
+    },
+    "Claude Code": {
+      "count": 16,
+      "channel_ids": [
+        "UC246MWp4LuTSqBGT-rSNEWw",
+        "UCEc-bBVf0JA5SEYpw1CYQDQ",
+        "UCG3YPQS6W0bHdru5vOGMj0A",
+        "UCxSDfT4achjpnZ_YKfwtjlQ",
+        "UCSz4XCfgNTaZJOGztt2adRQ",
+        "UCnGPmAcR-LCVm_TPxQ633Xw",
+        "UCHhwjJxK_nU2I5pTYkLKtAA",
+        "UC246MWp4LuTSqBGT-rSNEWw",
+        "UChusAok6psdzSxZFL_nEHAg",
+        "UCKbjuscI49I9shCrxg0YcDw",
+        "UCdoTbckiMelGtWvGMfhlkgQ",
+        "UCDHSuYNAX6y6bOIfLiUqcuQ",
+        "UCO-eEx-ckzUnFJtEUvr7Nfg",
+        "UCHnYG8F-N7mhzFrJ22iEdJg",
+        "UCbMlkb79E12CwveGAtdFj-A",
+        "UCrB7UFnkosBjAhOg3a9NdWw"
+      ]
+    },
+    "AI Agent": {
+      "count": 12,
+      "channel_ids": [
+        "UCBnC0dfmvJ9yiQz1JS86UOw",
+        "UC8ehMVkpMHK13QH4IIPoQ7g",
+        "UCEXIcRtD8wS4utNUVSFPV1w",
+        "UCbMlkb79E12CwveGAtdFj-A",
+        "UCLKPca3kwwd-B59HNr-_lvA",
+        "UCxUk2e3VhNKsuDw6ww-dv1Q",
+        "UC0QGKpICdIVWw8ZMVbWyuXA",
+        "UCGpsgNbzdF7BECCVbB1COHw",
+        "UCUopc5tlSTMgBsZaP4PItRA",
+        "UCrB7UFnkosBjAhOg3a9NdWw",
+        "UCZNV92L2mlIjISlMGpc2X8g",
+        "UCVzgTh8i9W-UtengLs-xytA"
+      ]
+    },
+    "Google Gemini": {
+      "count": 5,
+      "channel_ids": [
+        "UCS_hTKGKur8TcESrwV3zqrw",
+        "UCY7sdSYeyzK_arLQwu_9yqQ",
+        "UCboaqA4fwGpljEKeUjO1iVQ",
+        "UCw_5Y5pvxY-L3iXxqiMLKQA",
+        "UCRVzEriB1B2JKGpsLpL-uNg"
+      ]
+    },
+    "ChatGPT": {
+      "count": 6,
+      "channel_ids": [
+        "UCnyaL6R-AsRIt5IEycQ6fsQ",
+        "UCZi0wZ7X0Stt96kZV950sqA",
+        "UCwZOrfqqqY5Ku5c0gUstvwA",
+        "UCD9_Jh-pMqYY7Dg6fof2V-w",
+        "UCFdhWvszNJsszQ8AOlJnNzw",
+        "UCYpRDnhk5H8h16jpS84uqsA"
+      ]
+    },
+    "AI one person business": {
+      "count": 1,
+      "channel_ids": [
+        "UCrB7UFnkosBjAhOg3a9NdWw"
+      ]
+    },
+    "AI content creator": {
+      "count": 2,
+      "channel_ids": [
+        "UCmcRJBSAlOVxIRNMjERlCLA",
+        "UCm7zU1B8rHqZT8_DVEZaUqA"
       ]
     }
   }
